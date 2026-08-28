@@ -112,3 +112,25 @@ To know more about its features, check out our [website](https://scaffoldeth.io)
 We welcome contributions to Scaffold-ETH 2!
 
 Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+---
+
+## Deploy gotchas found during Monad Blitz prep (28 Aug 2026)
+
+Four things blocked deploying this to Vercel:
+
+1. **Next.js version blocked.** Vercel refuses to deploy versions hit by
+   CVE-2025-66478 and the 11 Dec RSC advisories. Patched releases per line:
+   15.0.7, 15.1.11, 15.2.8, 15.3.8, 15.4.10, 15.5.9, 16.0.10.
+   Or run `npx fix-react2shell-next`.
+2. **Root directory.** Monorepo — set Vercel's root to `packages/nextjs`,
+   not the repo root, or the build won't find a Next.js app.
+3. **Deployment Protection.** Vercel Pro puts SSO in front of deployments
+   by default. Settings > Deployment Protection > disable, or nobody
+   outside the team can open the link.
+4. **targetNetworks.** `packages/nextjs/scaffold.config.ts` ships as
+   `[chains.hardhat, chains.monadTestnet]`. Hardhat is first, so the
+   deployed frontend looks for localhost and fails. Drop hardhat.
+
+Also worth knowing: MetaMask mobile flags fresh `*.vercel.app` domains as
+"potentially deceptive". Users can proceed past it, but plan demos so
+attendees aren't forced through that screen.
